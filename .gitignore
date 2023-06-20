@@ -1,3 +1,6 @@
+**/isodir
+*.iso
+*.bin
 CrossCompiler
 **/*.tar.*
 # Prerequisites
