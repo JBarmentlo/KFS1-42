@@ -1,3 +1,5 @@
+CrossCompiler
+**/*.tar.*
 # Prerequisites
 *.d
 
