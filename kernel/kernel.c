@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
  
+
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
 #error "You are not using a cross-compiler, you will most certainly run into trouble"
@@ -31,7 +32,7 @@ enum vga_color {
 	VGA_COLOR_LIGHT_BROWN = 14,
 	VGA_COLOR_WHITE = 15,
 };
- 
+
 static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg) 
 {
 	return fg | bg << 4;
@@ -132,17 +133,82 @@ void terminal_writestring(const char* data)
 	terminal_write(data, strlen(data));
 }
  
-void kernel_main(void) 
-{
-	/* Initialize terminal interface */
-	terminal_initialize();
+// void kernel_main(void) 
+// {
+// 	/* Initialize terminal interface */
+// 	terminal_initialize();
  
-	/* Newline support is left as an exercise. */
-	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
-	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
-	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
-	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
-	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
-	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
-}
+// 	/* Newline support is left as an exercise. */
+// 	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
+// 	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
+// 	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
+// 	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
+// 	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
+// 	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");
+// }
 // 
+
+#define INT_DISABLE 0
+#define INT_ENABLE  0x200
+#define PIC1 0x20
+#define PIC2 0xA0
+
+#define ICW1 0x11
+#define ICW4 0x01
+
+void outb( unsigned short port, unsigned char val )
+{
+   asm volatile("outb %0, %1" : : "a"(val), "Nd"(port) );
+}
+
+static __inline unsigned char inb (unsigned short int port)
+{
+  unsigned char _v;
+
+  __asm__ __volatile__ ("inb %w1,%0":"=a" (_v):"Nd" (port));
+  return _v;
+}
+
+void init_pics(int pic1, int pic2)
+{
+   /* send ICW1 */
+   outb(PIC1, ICW1);
+   outb(PIC2, ICW1);
+
+   /* send ICW2 */
+   outb(PIC1 + 1, pic1);   
+   outb(PIC2 + 1, pic2);   
+
+   /* send ICW3 */
+   outb(PIC1 + 1, 4);   
+   outb(PIC2 + 1, 2);
+
+   /* send ICW4 */
+   outb(PIC1 + 1, ICW4);
+   outb(PIC2 + 1, ICW4);
+
+   /* disable all IRQs */
+   outb(PIC1 + 1, 0xFF);
+}
+
+/*irrelevant code*/
+
+
+void kernel_main()
+{
+    terminal_initialize();
+	char c = 0;
+	init_pics(0x20, 0x28);
+	do
+	{
+		if(inb(0x60)!=c) //PORT FROM WHICH WE READ
+		{
+			c = inb(0x60);
+			if(c>0)
+				{
+					terminal_putchar(c); //print on screen
+				}
+			}
+	}
+	while(c!=1); // 1= ESCAPE
+}
