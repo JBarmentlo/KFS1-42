@@ -19,7 +19,7 @@ BOOT_FILE	=	kernel/boot.s
 BOOT_OBJ	=	kernel/boot.o
 
 LINKER		=	kernel/linker.ld
-SRCS        =	kernel/kernel.c
+SRCS        =	kernel/src/kernel.c
 H = ""
 
 OBJS		=	$(patsubst %.c,%.o,$(SRCS))
