@@ -7,7 +7,7 @@
 [source website](https://ubuntu.com/blog/kvm-hyphervisor)
 
 ```bash
-sudo apt -y install bridge-utils cpu-checker libvirt-clients libvirt-daemon qemu qemu-kvm
+sudo apt -y install bridge-utils cpu-checker libvirt-clients libvirt-daemon qemu qemu-kvm xorriso mtools
 sudo kvm-ok
 
 # Should output
