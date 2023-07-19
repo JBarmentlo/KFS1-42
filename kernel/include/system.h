@@ -5,44 +5,10 @@
 #define _KERNEL_
 #include <types.h>
 
-#define STR(x) #x
-#define STRSTR(x) STR(x)
-
-/* Binary Literals */
-#define b(x) ((uint8_t)b_(0 ## x ## uL))
-#define b_(x) ((x & 1) | (x >> 2 & 2) | (x >> 4 & 4) | (x >> 6 & 8) | (x >> 8 & 16) | (x >> 10 & 32) | (x >> 12 & 64) | (x >> 14 & 128))
-
-/* Unimportant Kernel Strings */
-#define KERNEL_UNAME "ToAruOS"
-#define KERNEL_VERSION_STRING "0.0.1"
-
 #define asm __asm__
 #define volatile __volatile__
 
 extern unsigned int __irq_sem;
-
-#define IRQ_OFF { asm volatile ("cli"); }
-#define IRQ_RES { asm volatile ("sti"); }
-#define PAUSE   { asm volatile ("hlt"); }
-#define IRQS_ON_AND_PAUSE { asm volatile ("sti\nhlt\ncli"); }
-
-#define STOP while (1) { PAUSE; }
-
-#define SYSCALL_VECTOR 0x7F
-#define SIGNAL_RETURN 0xFFFFDEAF
-#define THREAD_RETURN 0xFFFFB00F
-
-extern void * code;
-extern void * end;
-
-extern char * boot_arg; /* Argument to pass to init */
-extern char * boot_arg_extra; /* Extra data to pass to init */
-
-
-
-// extern void *sbrk(uintptr_t increment);
-
-extern void tss_flush();
 
 /* Kernel Main */
 extern int max(int,int);
@@ -58,6 +24,7 @@ extern int atoi(const char *str);
 
 /* GDT */
 extern void gdt_install();
+extern void tss_flush();
 extern void gdt_set_gate(int num, unsigned long base, unsigned long limit, unsigned char access,
 			 unsigned char gran);
 extern void set_kernel_stack(uintptr_t stack);

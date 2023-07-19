@@ -7,11 +7,7 @@
 
 #define NULL ((void *)0UL)
 
-#ifndef BOOTLOADER
 typedef unsigned long uintptr_t;
-#else
-typedef unsigned short uintptr_t;
-#endif
 typedef unsigned long size_t;
 typedef signed int int32_t;
 typedef unsigned int uint32_t;
