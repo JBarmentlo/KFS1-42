@@ -19,7 +19,25 @@ BOOT_FILE	=	kernel/boot.s
 BOOT_OBJ	=	kernel/boot.o
 
 LINKER		=	kernel/linker.ld
-SRCS        =	kernel/src/kernel.c
+
+SRCS        =	kernel/src/kernel.c      \
+				kernel/src/gdt.c         \
+				kernel/src/sys/system.c  \
+				# kernel/src/sys/panic.c   \
+				# kernel/src/sys/syscall.c \
+				# kernel/src/sys/task.c    \
+				# kernel/src/sys/version.c \
+				# kernel/src/sys/process.c \
+				# kernel/src/sys/signal.c  \
+
+
+
+
+
+
+
+INCLUDE_FOLDER = kernel/include
+
 H = ""
 
 OBJS		=	$(patsubst %.c,%.o,$(SRCS))
@@ -42,7 +60,7 @@ boot: $(BOOT_FILE)
 %.o: %.c $(HFILES)
 	@echo "$(CRED_BACK)Compiling $@$(CEND)"
 	@echo "This should update on .h files too"
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -I $(INCLUDE_FOLDER) -c $< -o $@
 
 linker: $(LINKER) $(BOOT_OBJ) $(OBJS)
 	@echo "$(CRED_BACK)Linking$(CEND)"
