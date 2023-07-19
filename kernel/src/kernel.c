@@ -133,6 +133,7 @@ void terminal_writestring(const char* data)
 
 void kernel_main(void)
 {
+	gdt_install();
 	terminal_initialize();
  
 	terminal_writestring("           :::      ::::::::  \n       :+:      :+:    :+:  \n     +:+ +:+         +:+    \n   +#+  +:+       +#+       \n +#+#+#+#+#+   +#+          \n      #+#    #+#            \n     ###   ########         \n");

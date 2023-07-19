@@ -76,8 +76,7 @@ gdt_set_gate(
  * gdt_install
  * Install the kernel's GDTs
  */
-void
-gdt_install() {
+void gdt_install() {
 	/* GDT pointer and limits */
 	gp.limit = (sizeof(struct gdt_entry) * 6) - 1;
 	gp.base = (unsigned int)&gdt;

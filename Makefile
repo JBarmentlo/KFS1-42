@@ -23,6 +23,7 @@ LINKER		=	kernel/linker.ld
 SRCS        =	kernel/src/kernel.c      \
 				kernel/src/gdt.c         \
 				kernel/src/sys/system.c  \
+				kernel/src/sys/kprintf.c  \
 				# kernel/src/sys/panic.c   \
 				# kernel/src/sys/syscall.c \
 				# kernel/src/sys/task.c    \
