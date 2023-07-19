@@ -126,7 +126,6 @@ tss_flush:
 	mov ax, 0x2B
 	ltr ax
 	ret
-
 /*
 Set the size of the _start symbol to the current location '.' minus its start.
 This is useful when debugging or when you implement call tracing.
